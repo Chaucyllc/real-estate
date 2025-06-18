@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real Estate Investment Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; background: #f9f9f9; }
+    h1, h2 { color: darkgreen; }
+    label { font-weight: bold; margin-top: 10px; display: block; }
+    input { margin-bottom: 10px; width: 100%; padding: 8px; box-sizing: border-box; }
+    button { padding: 10px 15px; font-size: 16px; background-color: #2e7d32; color: white; border: none; border-radius: 5px; }
+    #results { background: #fff; padding: 15px; border: 1px solid #ccc; margin-top: 20px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Real Estate Investment Calculator</h1>
+
+  <label>Purchase Price ($): <input type="number" id="price" /></label>
+  <label>Down Payment (%): <input type="number" id="down" value="20" /></label>
+  <label>Interest Rate (% per year): <input type="number" id="rate" value="6.5" /></label>
+  <label>Loan Term (years): <input type="number" id="term" value="30" /></label>
+  <label>Monthly Rent ($): <input type="number" id="rent" /></label>
+  <label>Monthly Expenses ($): <input type="number" id="expenses" /></label>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div id="results"></div>
+
+  <script>
+    function calculate() {
+      const price = parseFloat(document.getElementById('price').value);
+      const downPercent = parseFloat(document.getElementById('down').value) / 100;
+      const annualRate = parseFloat(document.getElementById('rate').value);
+      const years = parseFloat(document.getElementById('term').value);
+      const rent = parseFloat(document.getElementById('rent').value);
+      const expenses = parseFloat(document.getElementById('expenses').value);
+
+      const loanAmount = price * (1 - downPercent);
+      const monthlyRate = annualRate / 12 / 100;
+      const numPayments = years * 12;
+
+      // Mortgage formula
+      const mortgage = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+                       (Math.pow(1 + monthlyRate, numPayments) - 1);
+
+      const monthlyCashFlow = rent - expenses - mortgage;
+      const annualCashFlow = monthlyCashFlow * 12;
+      const investment = price * downPercent;
+      const roi = (annualCashFlow / investment) * 100;
+      const capRate = ((rent - expenses) * 12 / price) * 100;
+
+      document.getElementById('results').innerHTML = `
+        <h2>Results:</h2>
+        <p><strong>Loan Amount:</strong> $${loanAmount.toFixed(2)}</p>
+        <p><strong>Monthly Mortgage Payment:</strong> $${mortgage.toFixed(2)}</p>
+        <p><strong>Monthly Cash Flow:</strong> $${monthlyCashFlow.toFixed(2)}</p>
+        <p><strong>Annual ROI:</strong> ${roi.toFixed(2)}%</p>
+        <p><strong>Cap Rate:</strong> ${capRate.toFixed(2)}%</p>
+      `;
+    }
+  </script>
+</body>
+</html>
